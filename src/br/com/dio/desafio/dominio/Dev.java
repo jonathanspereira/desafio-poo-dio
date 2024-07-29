@@ -14,29 +14,30 @@ public class Dev {
 
     public void progredir() {
         Optional<Conteudo> conteudo = this.conteudosInscritos.stream().findFirst();
-        if(conteudo.isPresent()) {
-            this.conteudosConcluidos.add(conteudo.get());
-            this.conteudosInscritos.remove(conteudo.get());
-        } else {
-            System.err.println("Você não está matriculado em nenhum conteúdo!");
-        }
+        conteudo.ifPresentOrElse(c -> {
+            this.conteudosConcluidos.add(c);
+            this.conteudosInscritos.remove(c);
+        }, () -> System.err.println("Você não está matriculado em nenhum conteúdo!"));
     }
 
     public double calcularTotalXp() {
-        Iterator<Conteudo> iterator = this.conteudosConcluidos.iterator();
-        double soma = 0;
-        while(iterator.hasNext()){
-            double next = iterator.next().calcularXp();
-            soma += next;
-        }
-        return soma;
-
-        /*return this.conteudosConcluidos
+        return this.conteudosConcluidos
                 .stream()
                 .mapToDouble(Conteudo::calcularXp)
-                .sum();*/
+                .sum();
+//        Iterator<Conteudo> iterator = this.conteudosConcluidos.iterator();
+//        double soma = 0;
+//        while(iterator.hasNext()){
+//            double next = iterator.next().calcularXp();
+//            soma += next;
+//        }
+//        return soma;
     }
 
+    public void visualizarProgresso() {
+        System.out.println("Conteúdos Inscritos " + getNome() +": " + conteudosInscritos);
+        System.out.println("Conteúdos Concluídos " + getNome() +": " + conteudosConcluidos);
+    }
 
     public String getNome() {
         return nome;
@@ -64,14 +65,18 @@ public class Dev {
 
     @Override
     public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Dev dev = (Dev) o;
+//        return Objects.equals(nome, dev.nome) && Objects.equals(conteudosInscritos, dev.conteudosInscritos) && Objects.equals(conteudosConcluidos, dev.conteudosConcluidos);
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dev dev = (Dev) o;
-        return Objects.equals(nome, dev.nome) && Objects.equals(conteudosInscritos, dev.conteudosInscritos) && Objects.equals(conteudosConcluidos, dev.conteudosConcluidos);
+        return Objects.equals(nome, dev.nome);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nome, conteudosInscritos, conteudosConcluidos);
+        return Objects.hash(nome);
     }
 }
